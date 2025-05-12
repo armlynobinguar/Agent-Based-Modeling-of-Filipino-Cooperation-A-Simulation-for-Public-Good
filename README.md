@@ -94,6 +94,7 @@ python -m src.main
 
 ## 📁 Project Structure
 
+```text
 tax-compliance-simulation/
 ├── src/
 │   ├── agents/
@@ -111,6 +112,7 @@ tax-compliance-simulation/
 ├── setup.bat                     # Windows setup
 ├── .env                          # API key file (excluded from repo)
 └── simulation_results/           # Folder for generated results (gitignored)
+```
 
 ## 📄 License
 This project is licensed under the Apache License 2.0.
