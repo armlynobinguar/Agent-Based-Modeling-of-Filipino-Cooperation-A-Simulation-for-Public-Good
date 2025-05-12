@@ -7,13 +7,13 @@ A multi-agent simulation system that models tax compliance behavior in the Filip
 ## 📈 Graphs & Analysis
 
 ### Tax Compliance Over Time
-![Tax Compliance Graph](https://github.com/armlynobinguar/Agent-Based-Modeling-of-Filipino-Cooperation-A-Simulation-for-Public-Good/blob/main/simulation_results/tax_compliance.png)
+![Tax Compliance Graph](https://github.com/armlynobinguar/Agent-Based-Modeling-of-Filipino-Cooperation-A-Simulation-for-Public-Good/blob/main/tax_compliance.png)
 
-### Contribution Distribution by Agent Type 
-![Contribution Graph](https://github.com/armlynobinguar/Agent-Based-Modeling-of-Filipino-Cooperation-A-Simulation-for-Public-Good/blob/main/simulation_results/contributions.png)
+### Contribution Distribution by Agent Type
+![Contribution Graph](https://github.com/armlynobinguar/Agent-Based-Modeling-of-Filipino-Cooperation-A-Simulation-for-Public-Good/blob/main/contributions.png)
 
 ### Sector Performance Analysis
-![Game Analysis Graph](https://github.com/armlynobinguar/Agent-Based-Modeling-of-Filipino-Cooperation-A-Simulation-for-Public-Good/blob/main/simulation_results/game_analysis.png)
+![Game Analysis Graph](https://github.com/armlynobinguar/Agent-Based-Modeling-of-Filipino-Cooperation-A-Simulation-for-Public-Good/blob/main/game_analysis.png)
 
 ## 📌 Overview
 
