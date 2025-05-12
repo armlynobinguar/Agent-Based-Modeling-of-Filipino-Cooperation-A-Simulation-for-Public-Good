@@ -100,7 +100,11 @@ class EventSystem:
                 elif factor == 'risk_tolerance':
                     agent.risk_tolerance *= (1 + impact)
                 elif factor == 'compliance_rate':
-                    agent.compliance_history[-1] *= (1 + impact) if agent.compliance_history else 1.0
+                    # Initialize compliance history if empty
+                    if not agent.compliance_history:
+                        agent.compliance_history = [1.0]  # Default compliance rate
+                    # Update the last compliance rate
+                    agent.compliance_history[-1] *= (1 + impact)
                 elif factor == 'voluntary_contribution':
                     agent.behavioral_model['contribution_range'] = (
                         agent.behavioral_model['contribution_range'][0] * (1 + impact),
@@ -123,7 +127,8 @@ class Moderator:
         self.event_system = EventSystem()
         self.sanctions = {}
         self.rewards = {}
-        self.results = SimulationResults()
+        self.results = SimulationResults(self.simulation_id)
+        self.results.round_history = self.round_history  # Pass round history to results
     
     def start_round(self, round_num: int) -> Dict:
         # Check for new events
@@ -134,6 +139,10 @@ class Moderator:
         
         # First pass: collect initial contributions
         for agent in self.agents:
+            # Initialize compliance history if empty
+            if not agent.compliance_history:
+                agent.compliance_history = [1.0]  # Default compliance rate
+            
             # Apply event impacts
             self.event_system.apply_event_impacts(agent)
             
@@ -178,19 +187,29 @@ class Moderator:
             'agent_states': self._capture_agent_states()
         }
         self.round_history.append(round_data)
+        self.results.round_history = self.round_history  # Update round history in results
         
-        # Save round data
+        # Save round data and update summary
         self.results.save_round(round_data)
         
-        # Update summary
+        # Create and save summary after each round
         summary = {
             'simulation_id': self.simulation_id,
             'start_time': self.round_history[0]['timestamp'],
-            'current_round': round_data['round'],
-            'total_contribution': round_data['total_contribution'],
-            'average_payout': round_data['payout'],
-            'agent_count': len(self.agents)
+            'current_round': round_num,
+            'total_rounds': round_num,
+            'total_contribution': total_contribution,
+            'average_payout': payout,
+            'agent_count': len(self.agents),
+            'final_contribution': total_contribution,
+            'average_payout': sum(r['payout'] for r in self.round_history) / len(self.round_history)
         }
+        
+        # Generate agent summaries for the final report
+        agent_summaries = self._generate_agent_summaries()
+        self.results.agent_summaries = agent_summaries  # Pass agent summaries to results
+        
+        # Save summary and final report
         self.results.save_summary(summary)
         
         return round_data

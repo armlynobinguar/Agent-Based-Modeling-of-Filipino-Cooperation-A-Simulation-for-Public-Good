@@ -15,6 +15,8 @@ class SimulationResults:
             self.simulation_id = datetime.now().strftime("%Y%m%d_%H%M%S")
         self.sim_dir = os.path.join(self.results_dir, f"simulation_{self.simulation_id}")
         os.makedirs(self.sim_dir, exist_ok=True)
+        self.round_history = []
+        self.agent_summaries = {}
     
     def save_round(self, round_data: Dict):
         """Save round data to a JSON file."""
@@ -24,9 +26,21 @@ class SimulationResults:
     
     def save_summary(self, summary: Dict):
         """Save summary data to a JSON file."""
+        # Ensure the directory exists
+        os.makedirs(self.sim_dir, exist_ok=True)
+        
+        # Save summary data
         summary_file = os.path.join(self.sim_dir, "summary.json")
         with open(summary_file, 'w') as f:
             json.dump(summary, f, indent=2)
+        
+        # Also save a copy in the final report
+        final_report = {
+            'summary': summary,
+            'rounds': self.round_history,
+            'agent_summaries': self.agent_summaries
+        }
+        self.save_final_report(final_report)
     
     def save_final_report(self, report: Dict):
         """Save final report to a JSON file."""
@@ -47,17 +61,33 @@ class SimulationResults:
             with open(os.path.join(sim_dir, round_file), 'r') as f:
                 rounds.append(json.load(f))
         
-        # Load summary and final report
-        with open(os.path.join(sim_dir, "summary.json"), 'r') as f:
-            summary = json.load(f)
+        # Load summary
+        try:
+            with open(os.path.join(sim_dir, "summary.json"), 'r') as f:
+                summary = json.load(f)
+        except FileNotFoundError:
+            summary = {
+                'simulation_id': simulation_id,
+                'total_rounds': 0,
+                'final_contribution': 0,
+                'average_payout': 0
+            }
         
-        with open(os.path.join(sim_dir, "final_report.json"), 'r') as f:
-            final_report = json.load(f)
+        # Load final report
+        try:
+            with open(os.path.join(sim_dir, "final_report.json"), 'r') as f:
+                final_report = json.load(f)
+        except FileNotFoundError:
+            final_report = {
+                'summary': summary,
+                'rounds': rounds,  # Use loaded rounds
+                'agent_summaries': {}
+            }
         
         return {
-            'rounds': rounds,
             'summary': summary,
-            'final_report': final_report
+            'final_report': final_report,
+            'rounds': rounds  # Add rounds to the returned data
         }
     
     def analyze_simulation(self, simulation_id: str = None):
@@ -75,13 +105,16 @@ class SimulationResults:
                 'payout': r['payout'],
                 'timestamp': r['timestamp']
             }
-            for r in data['rounds']
+            for r in data.get('rounds', [])  # Use get() with default empty list
         ])
         
-        # Create visualizations
-        self._create_contribution_plot(rounds_df)
-        self._create_compliance_plot(data['rounds'])
-        self._create_agent_behavior_plot(data['final_report']['agent_summaries'])
+        if not rounds_df.empty:
+            # Create visualizations
+            self._create_contribution_plot(rounds_df)
+            self._create_compliance_plot(data.get('rounds', []))
+            self._create_agent_behavior_plot(data['final_report'].get('agent_summaries', {}))
+        else:
+            print("No round data available for visualization")
     
     def _create_contribution_plot(self, rounds_df: pd.DataFrame):
         """Create plot of contributions over time."""
