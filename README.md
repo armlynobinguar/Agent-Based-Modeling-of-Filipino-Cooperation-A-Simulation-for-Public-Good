@@ -4,9 +4,7 @@ A multi-agent simulation system that models tax compliance behavior in the Filip
 
 ---
 
-## 📈 Graphs & Analysis
-
-### Sector Performance Analysis
+## 📈 Sector Performance Analysis
 ![Game Analysis Graph](https://github.com/armlynobinguar/Agent-Based-Modeling-of-Filipino-Cooperation-A-Simulation-for-Public-Good/blob/main/game_analysis.png)
 
 ## 📌 Overview
