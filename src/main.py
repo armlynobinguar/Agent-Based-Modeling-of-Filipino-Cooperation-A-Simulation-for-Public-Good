@@ -19,7 +19,7 @@ def run_simulation(rounds: int = 10,
     # Create simulation ID
     simulation_id = f"simulation_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
     
-    # Create 15 agents with diverse backgrounds and their monthly salaries
+    # Create 18 agents with diverse backgrounds and their monthly salaries
     agents = [
         # Government Sector
         LLMAgent("Mayor Santos", "Government Official", AgentState(
